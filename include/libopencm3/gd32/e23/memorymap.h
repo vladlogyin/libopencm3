@@ -48,7 +48,7 @@
  /* TODO check if below is true */
 #define BACKUP_REGS_BASE    (RTC_BASE + 0x50)
 #define WWDG_BASE           (PERIPH_BASE_APB1 + 0x2c00)
-#define FWDG_BASE           (PERIPH_BASE_APB1 + 0x3000)
+#define IWDG_BASE           (PERIPH_BASE_APB1 + 0x3000)
 /* PERIPH_BASE_APB1 + 0x3400 (0x4000 3400 - 0x4000 37FF): Reserved */
 #define SPI1_BASE           (PERIPH_BASE_APB1 + 0x3800)
 /* PERIPH_BASE_APB1 + 0x3C00 (0x4000 3C00 - 0x4000 3FFF): Reserved */
