@@ -22,6 +22,8 @@
 
 #if defined(GD32F1X0)
 #	include <libopencm3/gd32/f1x0/memorymap.h>
+#elif defined(GD32E23)
+#   include <libopencm3/gd32/e23/memorymap.h>
 #else
 #	error "gd32 family not defined."
 #endif
