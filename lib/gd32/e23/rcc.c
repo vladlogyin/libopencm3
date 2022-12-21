@@ -58,20 +58,37 @@ LGPL License Terms @ref lgpl_license
 uint32_t rcc_apb1_frequency = 8000000;
 uint32_t rcc_apb2_frequency = 8000000;
 uint32_t rcc_ahb_frequency = 8000000;
-/*
-const struct rcc_clock_scale rcc_hsi_configs[] = {
+
+const struct rcc_clock_scale rcc_hsi8_configs[] = {
 	{
-		.pllmul = RCC_CFGR0_PLLMUL_PLL_CLK_MUL12,
-		.hpre = RCC_CFGR0_HPRE_NODIV,
-		.ppre1 = RCC_CFGR0_PPRE_DIV2,
-		.ppre2 = RCC_CFGR0_PPRE_NODIV,
-		.adcpre = RCC_CFGR0_ADCPRE_APB2_DIV2,
-		.use_hse = false,
-		.ahb_frequency	= 48000000,
-		.apb1_frequency = 24000000,
-		.apb2_frequency = 48000000,
+		.pll_src=0,
+		.pll_mul=0,
+		.sysclk_src=RCC_CFGR0_SWS_SYSCLKSEL_HSI8CLK,
+		.pre_ahb=RCC_CFGR0_HPRE_DIV2,
+		.pre_apb1=RCC_CFGR0_PPRE_NODIV,
+		.pre_apb2=RCC_CFGR0_PPRE_NODIV,
+		.pre_hse=0,
+		.rtc_src=0,
+		.freq_ahb=4E3,
+		.freq_apb1=4E3,
+		.freq_apb2=4E3,
+		.flash_ws=FLASH_ACR_LATENCY_0WS
 	},
-};*/
+	{
+		.pll_src=RCC_CFGR0_PLLSRC_HSI8_CLK_DIV2,
+		.pll_mul=RCC_CFGR0_PLLMUL_PLL_CLK_MUL18,
+		.sysclk_src=RCC_CFGR0_SWS_SYSCLKSEL_PLLCLK,
+		.pre_ahb=RCC_CFGR0_HPRE_NODIV,
+		.pre_apb1=RCC_CFGR0_PPRE_NODIV,
+		.pre_apb2=RCC_CFGR0_PPRE_NODIV,
+		.pre_hse=0,
+		.rtc_src=0,
+		.freq_ahb=72E3,
+		.freq_apb1=72E3,
+		.freq_apb2=72E3,
+		.flash_ws=FLASH_ACR_LATENCY_2WS
+	},
+};
 
 
 /** @brief RCC Clear the Oscillator Ready Interrupt Flag
@@ -93,6 +110,7 @@ void rcc_osc_ready_int_clear(enum rcc_osc osc)
 		break;
 	case RCC_HSI8:
 		RCC_CIR |= RCC_CIR_HSI8RDYC;
+		break;
 	case RCC_HSI28:
 		RCC_CIR |= RCC_CIR_HSI28RDYC;
 		break;
@@ -448,11 +466,6 @@ void rcc_set_rtc_clock_source(enum rcc_osc clock_source)
 		clksel=RCC_BDCR_RTCSEL_NONE;
 		break;
 	}
-	if(clksel != RCC_BDCR_RTCSEL_NONE)
-	{
-		rcc_osc_on(clock_source);
-		rcc_wait_for_osc_ready(clock_source);
-	}
 	/* Select the RTC clock source. */
 	RCC_BDCR &= ~RCC_BDCR_RTCSEL_MASK;
 	RCC_BDCR |= (clksel << RCC_BDCR_RTCSEL_SHIFT);
@@ -551,58 +564,49 @@ uint32_t rcc_system_clock_source(void)
  */
 void rcc_clock_setup_pll(const struct rcc_clock_scale *clock)
 {
-	if (clock->use_hse) {
-		/* Enable external high-speed oscillator. */
-		rcc_osc_on(RCC_HSE);
-		rcc_wait_for_osc_ready(RCC_HSE);
-		rcc_set_sysclk_source(RCC_CFGR0_SW_SYSCLKSEL_HSECLK);
-	} else {
-		/* Enable internal high-speed oscillator. */
-		rcc_osc_on(RCC_HSI8);
-		rcc_wait_for_osc_ready(RCC_HSI8);
-		rcc_set_sysclk_source(RCC_CFGR0_SW_SYSCLKSEL_HSI8CLK);
-	}
 
 	/*
 	 * Set prescalers for AHB, ADC, APB1, APB2 and USB.
 	 * Do this before touching the PLL (TODO: why?).
 	 */
-	rcc_set_hpre(clock->hpre);
-	rcc_set_ppre1(clock->ppre1);
-	rcc_set_ppre2(clock->ppre2);
+	rcc_set_hpre(clock->pre_ahb);
+	rcc_set_ppre1(clock->pre_apb1);
+	rcc_set_ppre2(clock->pre_apb2);
 
-	/* TODO replace rcc_set_adcpre(clock->adcpre); with rcc_set_adc_clock(); */
-	if (clock->use_hse)
-		rcc_set_usbpre(clock->usbpre);
+	flash_set_ws(clock->flash_ws);
 
-	/* Set the PLL multiplication factor. */
-	rcc_set_pll_multiplication_factor(clock->pllmul);
+	enum rcc_osc sysclk = clock->sysclk_src == RCC_CFGR0_SW_SYSCLKSEL_HSECLK ? RCC_HSE
+	: (clock->sysclk_src == RCC_CFGR0_SW_SYSCLKSEL_PLLCLK ? RCC_PLL : RCC_HSI8);
 
-	if (clock->use_hse) {
-		/* Select HSE as PLL source. */
-		rcc_set_pll_source(RCC_CFGR0_PLLSRC_HSE_CLK);
+	if(sysclk == RCC_PLL)
+	{
 
-		/*
-		 * External frequency undivided before entering PLL
-		 * (only valid/needed for HSE).
-		 */
-		rcc_set_prediv(clock->pll_hse_prediv);
-	} else {
-		/* Select HSI/2 as PLL source. */
-		rcc_set_pll_source(RCC_CFGR0_PLLSRC_HSI8_CLK_DIV2);
+		enum rcc_osc pllsrc = clock->pll_src==RCC_CFGR0_PLLSRC_HSE_CLK?RCC_HSE:RCC_HSI8;
+
+		/* Turn on PLL input clock */
+		rcc_osc_on(pllsrc);
+		rcc_wait_for_osc_ready(pllsrc);
+
+		if(pllsrc==RCC_HSE)
+			rcc_set_prediv(clock->pre_hse);
+
+		/* Set the PLL multiplication factor. */
+		rcc_set_pll_multiplication_factor(clock->pll_mul);
+		rcc_set_pll_source(clock->pll_src);
+
 	}
 
-	/* Enable PLL oscillator and wait for it to stabilize. */
-	rcc_osc_on(RCC_PLL);
-	rcc_wait_for_osc_ready(RCC_PLL);
 
-	/* Select PLL as SYSCLK source. */
-	rcc_set_sysclk_source(RCC_CFGR0_SW_SYSCLKSEL_PLLCLK);
+	/* Turn on sysclk input */
+	rcc_osc_on(sysclk);
+	rcc_wait_for_osc_ready(sysclk);
+	/* Change over */
+	rcc_set_sysclk_source(clock->sysclk_src);
 
 	/* Set the peripheral clock frequencies used */
-	rcc_ahb_frequency = clock->ahb_frequency;
-	rcc_apb1_frequency = clock->apb1_frequency;
-	rcc_apb2_frequency = clock->apb2_frequency;
+	rcc_ahb_frequency = clock->freq_ahb*1E3;
+	rcc_apb1_frequency = clock->freq_apb1*1E3;
+	rcc_apb2_frequency = clock->freq_apb2*1E3;
 }
 
 /*---------------------------------------------------------------------------*/

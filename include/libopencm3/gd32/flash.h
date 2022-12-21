@@ -22,6 +22,8 @@
 
 #if defined(GD32F1X0)
 #       include <libopencm3/gd32/f1x0/flash.h>
+#elif defined(GD32E23)
+#       include <libopencm3/gd32/e23/flash.h>
 #else
 #       error "gd32 family not defined."
 #endif

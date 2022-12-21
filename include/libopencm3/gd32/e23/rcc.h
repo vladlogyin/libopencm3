@@ -60,7 +60,6 @@
 #define RCC_VKEY				MMIO32(RCC_BASE + 0x100)
 #define RCC_DSV					MMIO32(RCC_BASE + 0x134)
 
-
 /* RCC_CR0 values */
 
 #define RCC_CR0_PLLRDY					(1 << 25)
@@ -437,14 +436,31 @@ TODO delete this?
 /* RCC_CFGR2 values */
 
 #define RCC_CFGR2_ADCCLK_SHIFT			31
-/** @defgroup rcc_cfgr0_adcclk ADCCLK: ADC clock source
+/** @defgroup rcc_cfgr2_adcclk ADCCLK: ADC clock source
  * @{
  */
 #define RCC_CFGR2_ADCCLK_APB2			0
 #define RCC_CFGR2_ADCCLK_AHB			1
 /**@}*/
 
-#define RCC_CFGR2_ADCSW				(1 << 8)
+
+#define RCC_CFGR2_ADCSW_SHIFT			8
+/** @defgroup rcc_cfgr2_adcsw ADCCLK: ADC interal
+ * @{
+ */
+#define RCC_CFGR2_ADCSW_APB2_AHB		0
+#define RCC_CFGR2_ADCSW_HSI28			1
+/**@}*/
+
+#define RCC_CFGR2_HSI28_DIV			16
+/** @defgroup rcc_cfgr2_adcsw ADCCLK: ADC interal
+ * @{
+ */
+#define RCC_CFGR2_HSI28_DIV_DIV2		1 //TODO this probablyu isn't right but here's where you left off
+#define RCC_CFGR2_HSI28_DIV_NODIV		0
+/**@}*/
+
+
 
 #define RCC_CFGR2_USART0SW_SHIFT		0
 #define RCC_CFGR2_USART0SW				(0x3 << RCC_CFGR2_USART0SW_SHIFT)
@@ -469,39 +485,36 @@ extern uint32_t rcc_apb2_frequency;
 
 /* Function prototypes */
 
-enum rcc_clock_hsi {
-	RCC_CLOCK_HSI_48MHZ,
-	RCC_CLOCK_HSI_64MHZ,
-	RCC_CLOCK_HSI_END
-};
-
-struct rcc_clock_scale {
-	uint16_t pllmul;
-	uint8_t hpre;
-	uint8_t ppre1;
-	uint8_t ppre2;
-	uint8_t adcpre;
-	uint8_t adcclk;
-	uint8_t usbpre; /* Only valid if HSE used */
-	bool use_hse; /* PLL source is HSE if set, HSI/2 if unset */
-	uint8_t pll_hse_prediv; /* Only valid if HSE used */
-	uint32_t ahb_frequency;
-	uint32_t apb1_frequency;
-	uint32_t apb2_frequency;
-};
-
-extern const struct rcc_clock_scale rcc_hsi_configs[RCC_CLOCK_HSI_END];
-
 enum rcc_osc {
 	RCC_PLL, RCC_HSE, RCC_HSI8, RCC_HSI28, RCC_LSE, RCC_LSI
 };
 
+enum rcc_clock_hsi8 {
+	RCC_CLOCK_HSI8_4MHZ,
+	RCC_CLOCK_HSI8_72MHZ,
+	RCC_CLOCK_HSI8_END
+};
+
+struct rcc_clock_scale {
+	uint32_t pll_src:1;
+	uint32_t pll_mul:10;
+	uint32_t sysclk_src:2;
+	uint32_t pre_ahb:4;
+	uint32_t pre_apb1:3;
+	uint32_t pre_apb2:3;
+	uint32_t pre_hse:4;
+	uint32_t pre_hsi28:1;
+	uint32_t rtc_src:2;
+	uint32_t freq_ahb:18;
+	uint32_t freq_apb1:18;
+	uint32_t freq_apb2:18;
+	uint32_t flash_ws:3;
+};
+
+extern const struct rcc_clock_scale rcc_hsi8_configs[RCC_CLOCK_HSI8_END];
+
 #define _REG_BIT(base, bit)		(((base) << 5) + (bit))
 
-/* V = value line F100
- * N = standard line F101, F102, F103
- * C = communication line F105, F107
- */
 enum rcc_periph_clken {
 
 	/* AHB peripherals */
@@ -595,7 +608,6 @@ void rcc_set_adc_clock(uint8_t adcsrc, uint8_t adcpre);
 void rcc_set_ppre2(uint32_t ppre1);
 void rcc_set_ppre1(uint32_t ppre1);
 void rcc_set_hpre(uint32_t hpre);
-void rcc_set_usbpre(uint32_t usbpre);
 void rcc_set_prediv(uint32_t prediv);
 uint32_t rcc_system_clock_source(void);
 void rcc_clock_setup_pll(const struct rcc_clock_scale *clock);
