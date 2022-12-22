@@ -44,6 +44,8 @@
 #       include <libopencm3/stm32/g4/usart.h>
 #elif defined(STM32H7)
 #       include <libopencm3/stm32/h7/usart.h>
+#elif defined(GD32E23)
+#       include <libopencm3/gd32/e23/usart.h>
 #else
 #       error "stm32 family not defined."
 #endif
