@@ -58,6 +58,7 @@ LGPL License Terms @ref lgpl_license
 uint32_t rcc_apb1_frequency = 8000000;
 uint32_t rcc_apb2_frequency = 8000000;
 uint32_t rcc_ahb_frequency = 8000000;
+uint32_t rcc_sys_frequency = 8000000;
 
 const struct rcc_clock_scale rcc_hsi8_configs[] = {
 	{
@@ -72,6 +73,7 @@ const struct rcc_clock_scale rcc_hsi8_configs[] = {
 		.freq_ahb=4E3,
 		.freq_apb1=4E3,
 		.freq_apb2=4E3,
+		.freq_sys=72E3,
 		.flash_ws=FLASH_ACR_LATENCY_0WS
 	},
 	{
@@ -86,6 +88,7 @@ const struct rcc_clock_scale rcc_hsi8_configs[] = {
 		.freq_ahb=72E3,
 		.freq_apb1=72E3,
 		.freq_apb2=72E3,
+		.freq_sys=72E3,
 		.flash_ws=FLASH_ACR_LATENCY_2WS
 	},
 };
@@ -607,6 +610,7 @@ void rcc_clock_setup_pll(const struct rcc_clock_scale *clock)
 	rcc_ahb_frequency = clock->freq_ahb*1E3;
 	rcc_apb1_frequency = clock->freq_apb1*1E3;
 	rcc_apb2_frequency = clock->freq_apb2*1E3;
+	rcc_sys_frequency = clock->freq_sys*1E3;
 }
 
 /*---------------------------------------------------------------------------*/

@@ -508,6 +508,7 @@ struct rcc_clock_scale {
 	uint32_t freq_ahb:18;
 	uint32_t freq_apb1:18;
 	uint32_t freq_apb2:18;
+	uint32_t freq_sys:18;
 	uint32_t flash_ws:3;
 };
 
