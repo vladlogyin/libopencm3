@@ -629,5 +629,17 @@ void rcc_backupdomain_reset(void)
 	RCC_BDCR &= ~RCC_BDCR_BDRST;
 }
 
+/*---------------------------------------------------------------------------*/
+/** @brief Set the USART0 clock source
+*
+* @param usart0_sel periphral clock source @ref rcc_cfgr2_usart0sw
+*/
+
+void rcc_set_usart0_sel(uint32_t usart0_sel)
+{
+	RCC_CFGR2 &= ~RCC_CFGR2_USART0SW_MASK;
+	RCC_CFGR2 |= (usart0_sel << RCC_CFGR2_USART0SW_SHIFT);
+}
+
 /**@}*/
 

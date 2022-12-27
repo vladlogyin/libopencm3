@@ -456,18 +456,21 @@ TODO delete this?
 /** @defgroup rcc_cfgr2_adcsw ADCCLK: ADC interal
  * @{
  */
-#define RCC_CFGR2_HSI28_DIV_DIV2		1 //TODO this probablyu isn't right but here's where you left off
-#define RCC_CFGR2_HSI28_DIV_NODIV		0
+#define RCC_CFGR2_HSI28_DIV_DIV2		0
+#define RCC_CFGR2_HSI28_DIV_NODIV		1
 /**@}*/
 
 
-
+/** @defgroup rcc_cfgr2_usart0sw USART0SW: USART0 clock select
+ * @{
+ */
 #define RCC_CFGR2_USART0SW_SHIFT		0
-#define RCC_CFGR2_USART0SW				(0x3 << RCC_CFGR2_USART0SW_SHIFT)
-#define RCC_CFGR2_USART0SW_PCLK			(0 << RCC_CFGR2_USART0SW_SHIFT)
-#define RCC_CFGR2_USART0SW_SYSCLK		(1 << RCC_CFGR2_USART0SW_SHIFT)
-#define RCC_CFGR2_USART0SW_LSE			(2 << RCC_CFGR2_USART0SW_SHIFT)
-#define RCC_CFGR2_USART0SW_HSI			(3 << RCC_CFGR2_USART0SW_SHIFT)
+#define RCC_CFGR2_USART0SW_MASK			(0x3 << RCC_CFGR2_USART0SW_SHIFT)
+#define RCC_CFGR2_USART0SW_APB2			0
+#define RCC_CFGR2_USART0SW_SYSCLK		1
+#define RCC_CFGR2_USART0SW_LSE			2
+#define RCC_CFGR2_USART0SW_HSI8			3
+/**@}*/
 
 /* RCC_CR1 values */
 
@@ -482,6 +485,7 @@ TODO delete this?
 extern uint32_t rcc_ahb_frequency;
 extern uint32_t rcc_apb1_frequency;
 extern uint32_t rcc_apb2_frequency;
+extern uint32_t rcc_sys_frequency;
 
 /* Function prototypes */
 
@@ -610,6 +614,7 @@ void rcc_set_ppre2(uint32_t ppre1);
 void rcc_set_ppre1(uint32_t ppre1);
 void rcc_set_hpre(uint32_t hpre);
 void rcc_set_prediv(uint32_t prediv);
+void rcc_set_usart0_sel(uint32_t usart0_sel);
 uint32_t rcc_system_clock_source(void);
 void rcc_clock_setup_pll(const struct rcc_clock_scale *clock);
 void rcc_backupdomain_reset(void);

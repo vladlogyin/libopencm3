@@ -48,4 +48,12 @@ LGPL License Terms @ref lgpl_license
 #define USART1				USART1_BASE
 /**@}*/
 
+/**@}*/
+
+BEGIN_DECLS
+
+void usart_set_baudrate_pclk(uint32_t usart,uint32_t pclk , uint32_t baud);
+
+END_DECLS
+
 #endif
