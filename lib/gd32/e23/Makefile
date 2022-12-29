@@ -35,8 +35,9 @@ ARFLAGS		= rcs
 
 OBJS += flash.o flash_common_all.o flash_common_f.o flash_common_f01.o
 OBJS += gpio_common_all.o gpio_common_f0234.o
-OBJS += usart.o usart_common_all.o usart_common_v2.o
 OBJS += rcc.o rcc_common_all.o
+OBJS += spi_common_all.o spi_common_v2.o
+OBJS += usart.o usart_common_all.o usart_common_v2.o
 
 VPATH += ../:../../cm3:../common:../../stm32/common
 
