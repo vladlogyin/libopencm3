@@ -62,7 +62,7 @@
 
 /* APB2 */
 
-#define SYSCFG_COMP_BASE    (PERIPH_BASE_APB2 + 0x0000)
+#define SYSCFG_BASE    (PERIPH_BASE_APB2 + 0x0000)
 #define EXTI_BASE           (PERIPH_BASE_APB2 + 0x0400)
 /* PERIPH_BASE_APB2 + 0x0800 (0x4001 0800 - 0x4001 23FF): Reserved */
 #define ADC_BASE           (PERIPH_BASE_APB2 + 0x2400)
