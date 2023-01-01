@@ -25,6 +25,8 @@
 
 #elif defined(GD32F1X0)
 #	include "../gd32/f1x0/vector_nvic.c"
+#elif defined(GD32E23)
+#	include "../gd32/e23/vector_nvic.c"
 
 #elif defined(EFM32TG)
 #	include "../efm32/tg/vector_nvic.c"

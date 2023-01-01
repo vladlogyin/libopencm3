@@ -29,6 +29,8 @@
 
 #elif defined(GD32F1X0)
 #	include <libopencm3/gd32/f1x0/nvic.h>
+#elif defined(GD32E23)
+#	include <libopencm3/gd32/e23/nvic.h>
 
 #elif defined(EFM32TG)
 #	include <libopencm3/efm32/tg/nvic.h>
