@@ -698,6 +698,20 @@ depending on the level of the complementary input. */
 #define TIM_EGR_UG			(1 << 0)
 /**@}*/
 
+/* --- Timer OC modes ----------------------------------------------- */
+
+
+#define TIM_CCMR_OCM
+#define TIM_CCMR_OCM_FROZEN			0x0
+#define TIM_CCMR_OCM_ACTIVE			0x1
+#define TIM_CCMR_OCM_INACTIVE		0x2
+#define TIM_CCMR_OCM_TOGGLE			0x3
+#define TIM_CCMR_OCM_FORCE_LOW		0x4
+#define TIM_CCMR_OCM_FORCE_HIGH		0x5
+#define TIM_CCMR_OCM_PWM1			0x6
+#define TIM_CCMR_OCM_PWM2			0x7
+#define TIM_CCMR_OCM_MASK			0x7
+
 /* --- TIMx_CCMR1 values --------------------------------------------------- */
 
 /* --- Output compare mode --- */
@@ -1070,14 +1084,14 @@ enum tim_oc_id {
 
 /** Output Compare mode designators */
 enum tim_oc_mode {
-	TIM_OCM_FROZEN,
-	TIM_OCM_ACTIVE,
-	TIM_OCM_INACTIVE,
-	TIM_OCM_TOGGLE,
-	TIM_OCM_FORCE_LOW,
-	TIM_OCM_FORCE_HIGH,
-	TIM_OCM_PWM1,
-	TIM_OCM_PWM2,
+	TIM_OCM_FROZEN = TIM_CCMR_OCM_FROZEN,
+	TIM_OCM_ACTIVE = TIM_CCMR_OCM_ACTIVE,
+	TIM_OCM_INACTIVE = TIM_CCMR_OCM_INACTIVE,
+	TIM_OCM_TOGGLE = TIM_CCMR_OCM_TOGGLE,
+	TIM_OCM_FORCE_LOW = TIM_CCMR_OCM_FORCE_LOW,
+	TIM_OCM_FORCE_HIGH = TIM_CCMR_OCM_FORCE_HIGH,
+	TIM_OCM_PWM1 = TIM_CCMR_OCM_PWM1,
+	TIM_OCM_PWM2 = TIM_CCMR_OCM_PWM2,
 };
 
 /** Input Capture channel designators */
