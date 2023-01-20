@@ -253,8 +253,8 @@ LGPL License Terms @ref lgpl_license
 
 /* --- ADC_JDRx, ADC_DR values --------------------------------------------- */
 
-#define ADC_OSCR_TOS_EACH				(0x0<<9)
-#define ADC_OSCR_TOS_ONCE				(0x1<<9)
+#define ADC_OSCR_TOS_ONCE				(0x0<<9)
+#define ADC_OSCR_TOS_EACH				(0x1<<9)
 
 #define ADC_OSCR_OSSHIFT_SHIFT		5
 #define ADC_OSCR_OSSHIFT_MASK		(0x15<<ADC_OSCR_OSSHIFT_SHIFT)

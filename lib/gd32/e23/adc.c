@@ -436,7 +436,7 @@ adc_reg_base.
 */
 void adc_enable_oversampling(uint32_t adc, uint32_t ratio, uint32_t shift, uint32_t trigger)
 {
-	ADC_OSCR(adc) &= ~(ADC_OSCR_OSSHIFT_MASK|ADC_OSCR_OSRATIO_MASK|ADC_OSCR_TOS_ONCE);
+	ADC_OSCR(adc) &= ~(ADC_OSCR_OSSHIFT_MASK|ADC_OSCR_OSRATIO_MASK|ADC_OSCR_TOS_EACH);
 	ADC_OSCR(adc) |= ratio | shift | trigger | ADC_OSCR_OSEN;
 }
 
