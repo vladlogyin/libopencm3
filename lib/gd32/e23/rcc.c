@@ -607,10 +607,10 @@ void rcc_clock_setup_pll(const struct rcc_clock_scale *clock)
 	rcc_set_sysclk_source(clock->sysclk_src);
 
 	/* Set the peripheral clock frequencies used */
-	rcc_ahb_frequency = clock->freq_ahb*1E3;
-	rcc_apb1_frequency = clock->freq_apb1*1E3;
-	rcc_apb2_frequency = clock->freq_apb2*1E3;
-	rcc_sys_frequency = clock->freq_sys*1E3;
+	rcc_ahb_frequency = clock->freq_ahb*1000;
+	rcc_apb1_frequency = clock->freq_apb1*1000;
+	rcc_apb2_frequency = clock->freq_apb2*1000;
+	rcc_sys_frequency = clock->freq_sys*1000;
 }
 
 /*---------------------------------------------------------------------------*/
